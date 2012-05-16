@@ -298,16 +298,24 @@ namespace MongoDB.Bson
             }
             else
             {
+                /*
                 int charCount;
                 var totalCharsWritten = 0;
-
+         
                 for(var i = value.Length; i > 0; i -= charCount)
                 {
                     charCount = (i > _maxChars) ? _maxChars : i;
                     var count = Encoding.UTF8.GetBytes(value, totalCharsWritten, charCount, _buffer, 0);
                     _writer.Write(_buffer, 0, count);
                     totalCharsWritten += charCount;
+                    
                 }
+                */
+
+                /* Patch for byte order mark */
+                Byte[] buf = new byte[Encoding.UTF8.GetByteCount(value)];
+                Encoding.UTF8.GetBytes(value, 0, value.Length, buf, 0);
+                _writer.Write(buf);
             }
             _writer.Write((byte)0);
         }
